@@ -1,0 +1,37 @@
+name:                haskell-sprng
+version:             0.0.1
+cabal-version:       >= 1.6
+synopsis:            Binding to the SPRNG Pseuod Random Number Generator Library.
+description:         Write long description here.
+category:            FFI, Random Numbers
+license:             BSD3
+license-file:        LICENSE
+copyright:           (c)
+author:              Bernard James Pope (Bernie Pope)
+maintainer:          florbitous@gmail.com
+homepage:            http://github.com/bjpop/haskell-sprng
+build-type:          Simple
+stability:           experimental
+tested-with:         GHC==7.0.2
+extra-source-files:  src/cbits/*.cpp src/include/*.h README.txt
+
+source-repository head
+  type: git
+  location: git://github.com/bjpop/haskell-sprng.git
+
+Library
+   extra-libraries:  sprng
+   build-tools:
+   ghc-options: -Wall -fno-warn-name-shadowing -fno-warn-orphans -pgml g++
+   c-sources:
+      src/cbits/lfg_wrapper.cpp
+   include-dirs:
+      src/include
+   hs-source-dirs:
+      src
+   build-depends:
+      base > 3 && <= 5,
+      haskell98
+   exposed-modules:
+      Sprng.Internal
+   other-modules:
