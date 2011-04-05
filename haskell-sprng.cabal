@@ -24,7 +24,7 @@ Library
    build-tools:
    ghc-options: -Wall -fno-warn-name-shadowing -fno-warn-orphans -pgml g++
    c-sources:
-      src/cbits/lfg_wrapper.cpp
+      src/cbits/sprng_wrapper.cpp
    include-dirs:
       src/include
    hs-source-dirs:
