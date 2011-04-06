@@ -14,5 +14,6 @@ extern "C" float get_rn_flt(Sprng *);
 extern "C" double get_rn_dbl(Sprng *);
 extern "C" void free_rng(Sprng *);
 extern "C" void print_rng(Sprng *);
+extern "C" Sprng **spawn_rng(Sprng *, int);
 
 #endif

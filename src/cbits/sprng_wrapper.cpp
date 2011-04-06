@@ -36,3 +36,10 @@ void print_rng(Sprng *rng)
 {
    rng->print_rng();
 }
+
+Sprng **spawn_rng(Sprng *rng, int num)
+{
+   Sprng **new_rngs;
+   rng->spawn_rng(num, &new_rngs);
+   return new_rngs;
+}
