@@ -4,6 +4,7 @@
 #include "sprng.h"
 #include "sprng_cpp.h"
 
+extern "C" int new_seed(void);
 extern "C" Sprng * new_rng(int);
 extern "C" void init_rng(Sprng *, int, int, int, int);
 extern "C" int get_rn_int(Sprng *);

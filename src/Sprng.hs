@@ -2,6 +2,7 @@ module Sprng
    ( RNG {- abstract -}
    , SprngGen (..)
    , LFG, LCG, LCG64, CMRG, MLFG, PMLCG
+   , Internal.newSeed
    ) where
 
 import qualified Sprng.Internal as Internal

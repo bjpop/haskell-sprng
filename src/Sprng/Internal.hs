@@ -11,6 +11,7 @@ module Sprng.Internal
    , getRandomDouble
    , printRng
    , spawnRng
+   , newSeed
    ) where
 
 import Foreign.Ptr (Ptr, FunPtr)
@@ -23,6 +24,7 @@ type SprngPtr = Ptr ()
 data RngType = LFG | LCG | LCG64 | CMRG | MLFG | PMLCG
    deriving (Eq, Show, Enum)
 
+foreign import ccall "new_seed" newSeed :: IO Int
 foreign import ccall "new_rng" new_rng :: CInt -> IO SprngPtr
 foreign import ccall "init_rng" init_rng :: SprngPtr -> CInt -> CInt -> CInt -> CInt -> IO ()
 foreign import ccall "get_rn_int" get_rn_int :: SprngPtr -> IO CInt

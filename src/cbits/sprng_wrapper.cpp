@@ -1,5 +1,10 @@
 #include "sprng_wrapper.h"
 
+int new_seed(void)
+{
+   return make_new_seed();
+}
+
 Sprng * new_rng(int type)
 {
    return SelectType(type);
