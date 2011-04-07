@@ -1,15 +1,13 @@
 #include "sprng_wrapper.h"
 
-// Sprng * new_rng(Rng_type type)
-// XXX should use the enum type instead.
 Sprng * new_rng(int type)
 {
    return SelectType(type);
 }
 
-void init_rng(Sprng *rng, int streamnum, int nstreams, int seed, int pa)
+void init_rng(Sprng *rng, int streamnum, int nstreams, int seed, int param)
 {
-   rng->init_rng(streamnum, nstreams, seed, pa);
+   rng->init_rng(streamnum, nstreams, seed, param);
 }
 
 int get_rn_int(Sprng *rng)
@@ -42,4 +40,9 @@ Sprng **spawn_rng(Sprng *rng, int num)
    Sprng **new_rngs;
    rng->spawn_rng(num, &new_rngs);
    return new_rngs;
+}
+
+void free_spawn_buffer(Sprng **buffer)
+{
+   free(buffer);
 }

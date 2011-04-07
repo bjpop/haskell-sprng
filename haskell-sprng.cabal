@@ -20,9 +20,10 @@ source-repository head
   location: git://github.com/bjpop/haskell-sprng.git
 
 Library
-   extra-libraries:  sprng
+   extra-libraries: sprng stdc++
    build-tools:
-   ghc-options: -Wall -fno-warn-name-shadowing -fno-warn-orphans -pgml g++
+   -- ghc-options: -Wall -fno-warn-name-shadowing -fno-warn-orphans -pgml g++
+   ghc-options: -Wall -fno-warn-name-shadowing
    c-sources:
       src/cbits/sprng_wrapper.cpp
    include-dirs:
@@ -33,5 +34,6 @@ Library
       base > 3 && <= 5,
       haskell98
    exposed-modules:
+      Sprng
       Sprng.Internal
    other-modules:
