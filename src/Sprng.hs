@@ -1,3 +1,5 @@
+{-# LANGUAGE EmptyDataDecls #-}
+
 module Sprng
    ( RNG {- abstract -}
    , SprngGen (..)
