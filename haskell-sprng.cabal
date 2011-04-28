@@ -22,8 +22,7 @@ source-repository head
 Library
    extra-libraries: sprng stdc++
    build-tools:
-   -- ghc-options: -Wall -fno-warn-name-shadowing -fno-warn-orphans -pgml g++
-   ghc-options: -Wall -fno-warn-name-shadowing
+   ghc-options: -Wall -fno-warn-name-shadowing -fno-warn-orphans -pgml g++
    c-sources:
       src/cbits/sprng_wrapper.cpp
    include-dirs:
