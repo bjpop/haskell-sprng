@@ -24,6 +24,11 @@ type SprngPtr = Ptr ()
 data RngType = LFG | LCG | LCG64 | CMRG | MLFG | PMLCG
    deriving (Eq, Show, Enum)
 
+-- the calls are marked as "unsafe" because they do not call back into
+-- the ghc runtime and should not block for a long time. The "unsafe"
+-- attribute allows much faster foreign calls to be made, and this provides
+-- a signficant performance benefit, especially for the functions which are
+-- typically called frequently (such as get_rn_int).
 foreign import ccall unsafe "new_seed" newSeed :: IO Int
 foreign import ccall unsafe "new_rng" new_rng :: CInt -> IO SprngPtr
 foreign import ccall unsafe "init_rng" init_rng :: SprngPtr -> CInt -> CInt -> CInt -> CInt -> IO ()
