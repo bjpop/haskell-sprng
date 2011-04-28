@@ -24,16 +24,16 @@ type SprngPtr = Ptr ()
 data RngType = LFG | LCG | LCG64 | CMRG | MLFG | PMLCG
    deriving (Eq, Show, Enum)
 
-foreign import ccall "new_seed" newSeed :: IO Int
-foreign import ccall "new_rng" new_rng :: CInt -> IO SprngPtr
-foreign import ccall "init_rng" init_rng :: SprngPtr -> CInt -> CInt -> CInt -> CInt -> IO ()
-foreign import ccall "get_rn_int" get_rn_int :: SprngPtr -> IO CInt
-foreign import ccall "get_rn_flt" get_rn_flt :: SprngPtr -> IO CFloat
-foreign import ccall "get_rn_dbl" get_rn_dbl :: SprngPtr -> IO CDouble
-foreign import ccall "print_rng" print_rng :: SprngPtr -> IO ()
-foreign import ccall "spawn_rng" spawn_rng :: SprngPtr -> CInt -> IO (Ptr SprngPtr)
-foreign import ccall "&free_rng" freeRngFunPtr :: FunPtr (SprngPtr -> IO ())
-foreign import ccall "free_spawn_buffer" freeSpawnBuffer :: Ptr (SprngPtr) -> IO ()
+foreign import ccall unsafe "new_seed" newSeed :: IO Int
+foreign import ccall unsafe "new_rng" new_rng :: CInt -> IO SprngPtr
+foreign import ccall unsafe "init_rng" init_rng :: SprngPtr -> CInt -> CInt -> CInt -> CInt -> IO ()
+foreign import ccall unsafe "get_rn_int" get_rn_int :: SprngPtr -> IO CInt
+foreign import ccall unsafe "get_rn_flt" get_rn_flt :: SprngPtr -> IO CFloat
+foreign import ccall unsafe "get_rn_dbl" get_rn_dbl :: SprngPtr -> IO CDouble
+foreign import ccall unsafe "print_rng" print_rng :: SprngPtr -> IO ()
+foreign import ccall unsafe "spawn_rng" spawn_rng :: SprngPtr -> CInt -> IO (Ptr SprngPtr)
+foreign import ccall unsafe "&free_rng" freeRngFunPtr :: FunPtr (SprngPtr -> IO ())
+foreign import ccall unsafe "free_spawn_buffer" freeSpawnBuffer :: Ptr (SprngPtr) -> IO ()
 
 newRng :: RngType -> IO Sprng
 newRng ty = do
