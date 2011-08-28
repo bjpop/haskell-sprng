@@ -1,6 +1,6 @@
 {-# LANGUAGE ScopedTypeVariables #-}
 
--- compile with: ghc --make Foo.hs -pgml g++
+-- compile with: ghc --make Foo.hs -pgml /path/to/g++
 
 module Main where
 
