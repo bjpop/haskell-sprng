@@ -4,6 +4,15 @@ Haskell-sprng, Haskell bindings to the SPRNG library
 How to build
 ------------
 
+cabal install --extra-lib-dirs=/path/to/lib/ --extra-include-dirs=/path/to/include/
+
+Note: when you use the Haskell-SPRNG library in your own Haskell program you must
+link it with the same C++ compiler that was used to build the library.
+
+For example:
+
+   ghc --make -O2 Foo.hs -pgml /path/to/c++/compiler
+
 Testing
 -------
 
