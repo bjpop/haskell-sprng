@@ -1,5 +1,10 @@
 #include "sprng_wrapper.h"
 
+int sprng_default(void)
+{
+    return SPRNG_DEFAULT;
+}
+
 int new_seed(void)
 {
    return make_new_seed();

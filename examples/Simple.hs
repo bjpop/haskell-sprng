@@ -1,14 +1,14 @@
 {-# LANGUAGE ScopedTypeVariables #-}
 
--- compile with: ghc --make Foo.hs -pgml /path/to/g++
+-- compile with: ghc -O2 --make Foo.hs -pgml /path/to/g++
 
 module Main where
 
 import Sprng
 
 main = do
-   gen1 :: RNG LFG <- newRng
-   initRng gen1 0 1 985456376 0
+   seed <- newSeed
+   gen1 :: RNG LFG <- newRng seed
    [gen2, gen3, gen4] <- spawnRng gen1 3
    printRandInts gen1 10
    printRandDoubles gen1 10
