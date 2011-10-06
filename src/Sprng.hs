@@ -13,7 +13,7 @@ module Sprng
    , randomInt
    , randomFloat
    , randomDouble
-   -- , spawnRng
+   , spawnRng
    -- , mkNewRng
    ) where
 
@@ -55,8 +55,8 @@ randomDouble :: RNG -> IO Double
 randomDouble (RNG lfg) = Internal.getRandomDouble lfg
 
 -- | Create new generators from an existing one.
--- spawnRng :: RNG -> Int -> IO [RNG]
--- spawnRng (RNG lfg) n = map RNG `fmap` Internal.spawnRng lfg n
+spawnRng :: RNG -> Int -> IO [RNG]
+spawnRng (RNG lfg) n = map RNG `fmap` Internal.spawnRng lfg n
 
 {-
 printRng :: RNG a -> IO ()
