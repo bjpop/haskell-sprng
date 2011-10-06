@@ -1,11 +1,39 @@
--- | This library implements 
+-- | This library implements an Modified Additive Lagged Fibonacci
+-- Pseudo Random Number Generator (LFG). It is based on an FFI binding
+-- to the Scalable Parallel Pseudo Random Number Generator library
+-- (SPRNG) version 4.
+-- It provides a good quality fast splittable (aka spawnable) generator.
 --
--- It provides several types of generator algorithms:
+-- Generators are represented by the abstract type RNG.
 --
---    * Additive Lagged Fibonacci (LFG)
+-- New generators are constructed using the "new" function, which takes
+-- a seed as its argument:
 --
--- The generators are splittable, which means that new generators can
--- be spawned from existing ones (many times, though not infinitely).
+-- let seed = 42
+-- gen <- new seed
+--
+-- Given a generator, random integers and doubles can be generated using
+-- randomInt and randomDouble:
+--
+-- nextInt <- randomInt gen
+-- nextDouble <- randomDouble gen
+--
+-- A list of new generators can be spawned from an existing generator
+-- using the spawn function, by specifiying how many generators you want:
+--
+-- newGens <- spawn 12
+--
+-- Note: a large number of new independent generators can be spawned,
+-- but the number is not infinite.
+--
+-- SPRNG is written in C++, but due to complications
+-- with using C++ with the Haskell FFI (the need to use a C++ compiler
+-- for linking to resolve mangled names), and also because of the
+-- relative difficulty of building SPRNG from source, we have decided
+-- to provide our own version of the LFG from SPRNG re-written in C.
+-- The rewrite is fairly trivial because SPRNG does not really use C++
+-- in any essential way, rather it is mostly a thin gloss over
+-- ordinary C code.
 
 module System.Random.SPRNG.LFG
    ( RNG {- abstract -}
