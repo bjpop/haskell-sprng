@@ -7,7 +7,7 @@
 -- The generators are splittable, which means that new generators can
 -- be spawned from existing ones (many times, though not infinitely).
 
-module Sprng
+module System.Random.SPRNG.LFG
    ( RNG {- abstract -}
    , new
    , randomInt
@@ -17,7 +17,7 @@ module Sprng
    -- , mkNewRng
    ) where
 
-import qualified Sprng.Internal as Internal
+import qualified System.Random.SPRNG.LFG.Internal as Internal
 
 -- | An abstract Random Number Generator
 data RNG = RNG Internal.LFG

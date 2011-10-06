@@ -1,7 +1,7 @@
 {-# LANGUAGE ForeignFunctionInterface #-}
 {-# OPTIONS_GHC -fno-warn-missing-signatures #-}
 
-module Sprng.Internal
+module System.Random.SPRNG.LFG.Internal
    ( LFG
    , new
    , initialise
