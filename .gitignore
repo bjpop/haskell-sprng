@@ -4,3 +4,4 @@ dist
 *.swp
 examples/Simple
 examples/Spawn
+examples/Benchmark
