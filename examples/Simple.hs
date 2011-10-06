@@ -1,14 +1,11 @@
-{-# LANGUAGE ScopedTypeVariables #-}
-
--- compile with: ghc -O2 --make Foo.hs -pgml /path/to/g++
-
 module Main where
 
 import Sprng
+import Control.Monad (replicateM_)
 
 main = do
-   seed <- newSeed
-   gen1 :: RNG LFG <- newRng seed
+   let seed = 42
+   gen1 <- new seed
    [gen2, gen3, gen4] <- spawnRng gen1 3
    printRandInts gen1 10
    printRandDoubles gen1 10
@@ -19,14 +16,10 @@ main = do
    printRandInts gen4 10
    printRandDoubles gen4 10
 
-printRandInts :: SprngGen a => RNG a -> Int -> IO ()
-printRandInts rng num = do
-   printRng rng
-   is <- sequence $ replicate num $ randomInt rng
-   mapM_ print is
+printRandInts :: RNG -> Int -> IO ()
+printRandInts rng num =
+   replicateM_ num (print =<< randomInt rng)
 
-printRandDoubles :: SprngGen a => RNG a -> Int -> IO ()
-printRandDoubles rng num = do
-   printRng rng
-   ds <- sequence $ replicate num $ randomDouble rng
-   mapM_ print ds
+printRandDoubles :: RNG -> Int -> IO ()
+printRandDoubles rng num =
+   replicateM_ num (print =<< randomDouble rng)
