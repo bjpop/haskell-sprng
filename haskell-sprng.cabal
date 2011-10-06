@@ -1,5 +1,5 @@
 name:                haskell-sprng
-version:             0.0.1
+version:             0.0.2
 cabal-version:       >= 1.6
 synopsis:            Binding to the SPRNG Pseuod Random Number Generator Library.
 description:         Write long description here.
@@ -13,7 +13,7 @@ homepage:            http://github.com/bjpop/haskell-sprng
 build-type:          Simple
 stability:           experimental
 tested-with:         GHC==7.0.2
-extra-source-files:  src/cbits/*.cpp src/include/*.h README.txt
+extra-source-files:  src/cbits/*.c src/include/*.h README.txt
 
 source-repository head
   type: git
@@ -33,6 +33,6 @@ Library
       base > 3 && <= 5,
       haskell98
    exposed-modules:
-      Sprng
-      Sprng.Internal
+      System.Random.SPRNG.LFG
+      System.Random.SPRNG.LFG.Internal
    other-modules:
