@@ -1,7 +1,7 @@
 module Main where
 
 import Prelude hiding (init)
-import Sprng (RNG, new, randomInt, randomDouble, spawn)
+import System.Random.SPRNG.LFG (RNG, new, randomInt, randomDouble, spawn)
 import Control.Monad (replicateM_)
 import Data.Int (Int32)
 import Text.Printf

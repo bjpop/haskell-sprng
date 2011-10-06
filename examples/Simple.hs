@@ -1,12 +1,12 @@
 module Main where
 
-import Sprng
+import System.Random.SPRNG.LFG
 import Control.Monad (replicateM_)
 
 main = do
    let seed = 42
    gen1 <- new seed
-   [gen2, gen3, gen4] <- spawnRng gen1 3
+   [gen2, gen3, gen4] <- spawn gen1 3
    printRandInts gen1 10
    printRandDoubles gen1 10
    printRandInts gen2 10
