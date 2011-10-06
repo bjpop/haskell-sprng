@@ -36,13 +36,12 @@
 -- ordinary C code.
 
 module System.Random.SPRNG.LFG
-   ( RNG {- abstract -}
+   ( RNG
    , new
    , randomInt
    , randomFloat
    , randomDouble
    , spawn
-   -- , mkNewRng
    ) where
 
 import qualified System.Random.SPRNG.LFG.Internal as Internal
@@ -52,7 +51,7 @@ data RNG = RNG Internal.LFG
 
 -- | Construct a new generator, given a seed as input, and initialise with default parameters.
 new :: Int -- ^ Seed.
-    -> IO RNG -- ^ Initialised generator.
+    -> IO RNG -- ^ New generator.
 new seed = do
    lfg <- Internal.new
    Internal.initialise lfg 0 1 seed 0
@@ -90,6 +89,3 @@ spawn (RNG lfg) n = map RNG `fmap` Internal.spawnRng lfg n
 printRng :: RNG a -> IO ()
 printRng (RNG rng) = Internal.printRng rng
 -}
-
--- default implementations which just call the underlying SPRNG libs.
-
