@@ -2,3 +2,5 @@ dist
 *.hi
 *.o
 *.swp
+examples/Simple
+examples/Spawn
