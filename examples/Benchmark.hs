@@ -12,7 +12,7 @@ import qualified System.Random.SPRNG.LFG as LFG
 main = do
   mwc <- MWC.create
   mtg <- M.newMTGen . Just =<< MWC.uniform mwc
-  lfg <- LFG.new 42
+  lfg <- LFG.create 42
   defaultMain
     [ bgroup "random"
       [
@@ -27,6 +27,6 @@ main = do
       ]
     , bgroup "SPRNG"
       [
-        bench "Double" (LFG.randomDouble lfg :: IO Double)
+        bench "Double" (LFG.uniform lfg :: IO Double)
       ]
     ]

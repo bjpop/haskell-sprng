@@ -5,7 +5,7 @@ import Control.Monad (replicateM_)
 
 main = do
    let seed = 42
-   gen1 <- new seed
+   gen1 <- create seed
    [gen2, gen3, gen4] <- spawn gen1 3
    printRandInts gen1 10
    printRandDoubles gen1 10
@@ -16,10 +16,10 @@ main = do
    printRandInts gen4 10
    printRandDoubles gen4 10
 
-printRandInts :: RNG -> Int -> IO ()
+printRandInts :: Gen -> Int -> IO ()
 printRandInts rng num =
-   replicateM_ num (print =<< randomInt rng)
+   replicateM_ num (print =<< (uniform rng :: IO Int))
 
-printRandDoubles :: RNG -> Int -> IO ()
+printRandDoubles :: Gen -> Int -> IO ()
 printRandDoubles rng num =
-   replicateM_ num (print =<< randomDouble rng)
+   replicateM_ num (print =<< (uniform rng :: IO Double))
