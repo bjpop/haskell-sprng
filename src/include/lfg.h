@@ -16,6 +16,7 @@ typedef struct
   int param;
 } LFG;
 
+extern void get_rn_words(LFG *, unsigned *, unsigned *);
 extern int get_rn_int(LFG *);
 extern double get_rn_dbl(LFG *);
 extern float get_rn_flt(LFG *);

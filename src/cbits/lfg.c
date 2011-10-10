@@ -78,7 +78,7 @@
 #define kv lfg_kv
 
 #define MAX_STREAMS lfg_MAX_STREAMS
-#define NGENS lfg_NEGS
+#define NGENS lfg_NEGS // XXX this is incremented, but never tested in this module, maybe we can delete?
 #define valid lfg_valid
 
 /*#define PRINT_GEN*/
@@ -301,51 +301,12 @@ static void si_double(unsigned *a,  unsigned *b, int length)
 /*************************************************************************/
 /*************************************************************************/
 
-//int LFG::get_rn_int(LFG *gen)
-int get_rn_int(LFG *gen)
-/*      returns value put into new position                              */
+// We factor out the common part of each get_rn_int, get_rn_flt, get_rn,_dbl.
+void get_rn_words(LFG *gen, unsigned *temp1, unsigned *temp2)
 {
-  unsigned new_val,*r0_local,*r1_local;
+  unsigned *r0_local,*r1_local;
   int hptr_local,lptr,*hp;
-  int lv, kv;
-
-  hp = &(gen->hptr);
-  lv = gen->lval;
-  kv = gen->kval;
-  r0_local = gen->r0;
-  r1_local = gen->r1;
-  hptr_local = *hp;
-  lptr = hptr_local + kv;
-  
-  if (lptr>=lv) lptr -= lv;
-  
-/*    INT_MOD_MASK causes arithmetic to be modular when integer size is  */
-/*         different from generator modulus                              */
-  
-  r0_local[hptr_local] = INT_MOD_MASK&(r0_local[hptr_local] + r0_local[lptr]);
-  r1_local[hptr_local] = INT_MOD_MASK&(r1_local[hptr_local] + r1_local[lptr]);
-  new_val = (r1_local[hptr_local]&(~1)) ^ (r0_local[hptr_local]>>1);
-  
-  if (--hptr_local < 0) 
-    hptr_local = lv - 1; /* skip an element in the sequence */
-    
-  if (--lptr < 0) 
-    lptr = lv - 1;
-    
-  r0_local[hptr_local] = INT_MOD_MASK&(r0_local[hptr_local] + r0_local[lptr]);
-  r1_local[hptr_local] = INT_MOD_MASK&(r1_local[hptr_local] + r1_local[lptr]);
-  *hp = (--hptr_local < 0) ? lv-1 : hptr_local;
-  
-  return (new_val>>1);
-}
-
-//float LFG::get_rn_flt()
-float get_rn_flt(LFG *gen)
-/*      returns value put into new position                              */
-{
-  unsigned long new_val; /* this cannot be unsigned int due to a bug in the SGI compiler */
-  unsigned  *r0_local,*r1_local;	
-  int hptr_local,lptr,*hp;
+  double new_val;
   int lv, kv;
 
   hp = &(gen->hptr);
@@ -361,12 +322,109 @@ float get_rn_flt(LFG *gen)
 
 /*    INT_MOD_MASK causes arithmetic to be modular when integer size is  */
 /*         different from generator modulus                              */
+
+  r0_local[hptr_local] = INT_MOD_MASK&(r0_local[hptr_local] + r0_local[lptr]);
+  r1_local[hptr_local] = INT_MOD_MASK&(r1_local[hptr_local] + r1_local[lptr]);
+  *temp1 = (r1_local[hptr_local]&(~1)) ^ (r0_local[hptr_local]>>1);
+
+  if (--hptr_local < 0)
+    hptr_local = lv - 1;  /* skip an element in the sequence */
+
+  if (--lptr < 0)
+    lptr = lv - 1;
+
+  r0_local[hptr_local] = INT_MOD_MASK&(r0_local[hptr_local] + r0_local[lptr]);
+  r1_local[hptr_local] = INT_MOD_MASK&(r1_local[hptr_local] + r1_local[lptr]);
+  *temp2 = (r1_local[hptr_local]&(~1)) ^ (r0_local[hptr_local]>>1);
+  *hp = (--hptr_local < 0) ? lv-1 : hptr_local;
+}
+
+int get_rn_int(LFG *gen)
+{
+   unsigned temp1, temp2;
+   get_rn_words(gen, &temp1, &temp2);
+   return (temp1>>1);
+}
+
+float get_rn_flt(LFG *gen)
+{
+   unsigned temp1, temp2;
+   get_rn_words(gen, &temp1, &temp2);
+   return (temp1*FLT_MULT);
+}
+
+double get_rn_dbl(LFG *gen)
+{
+   unsigned temp1, temp2;
+   get_rn_words(gen, &temp1, &temp2);
+   return ((unsigned int) temp2*(double)FLT_MULT + (unsigned int) temp1)*FLT_MULT;
+}
+
+/*
+int get_rn_int(LFG *gen)
+//returns value put into new position
+{
+  unsigned new_val,*r0_local,*r1_local;
+  int hptr_local,lptr,*hp;
+  int lv, kv;
+
+  hp = &(gen->hptr);
+  lv = gen->lval;
+  kv = gen->kval;
+  r0_local = gen->r0;
+  r1_local = gen->r1;
+  hptr_local = *hp;
+  lptr = hptr_local + kv;
+  
+  if (lptr>=lv) lptr -= lv;
+  
+//    INT_MOD_MASK causes arithmetic to be modular when integer size is
+//         different from generator modulus
+  
+  r0_local[hptr_local] = INT_MOD_MASK&(r0_local[hptr_local] + r0_local[lptr]);
+  r1_local[hptr_local] = INT_MOD_MASK&(r1_local[hptr_local] + r1_local[lptr]);
+  new_val = (r1_local[hptr_local]&(~1)) ^ (r0_local[hptr_local]>>1);
+  
+  if (--hptr_local < 0) 
+    hptr_local = lv - 1; // skip an element in the sequence
+    
+  if (--lptr < 0) 
+    lptr = lv - 1;
+    
+  r0_local[hptr_local] = INT_MOD_MASK&(r0_local[hptr_local] + r0_local[lptr]);
+  r1_local[hptr_local] = INT_MOD_MASK&(r1_local[hptr_local] + r1_local[lptr]);
+  *hp = (--hptr_local < 0) ? lv-1 : hptr_local;
+  
+  return (new_val>>1);
+}
+
+float get_rn_flt(LFG *gen)
+//      returns value put into new position
+{
+  unsigned long new_val; // this cannot be unsigned int due to a bug in the SGI compiler
+  unsigned  *r0_local,*r1_local;
+  int hptr_local,lptr,*hp;
+  int lv, kv;
+
+  hp = &(gen->hptr);
+  lv = gen->lval;
+  kv = gen->kval;
+  r0_local = gen->r0;
+  r1_local = gen->r1;
+  hptr_local = *hp;
+  lptr = hptr_local + kv;
+
+  if (lptr>=lv)
+    lptr -= lv;
+
+//    INT_MOD_MASK causes arithmetic to be modular when integer size is
+//         different from generator modulus
   r0_local[hptr_local] = INT_MOD_MASK&(r0_local[hptr_local] + r0_local[lptr]);
   r1_local[hptr_local] = INT_MOD_MASK&(r1_local[hptr_local] + r1_local[lptr]);
   new_val = (r1_local[hptr_local]&(~1)) ^ (r0_local[hptr_local]>>1);
 
   if (--hptr_local < 0) 
-    hptr_local = lv - 1; /* skip an element in the sequence */
+    hptr_local = lv - 1; // skip an element in the sequence
   
   if (--lptr < 0) 
     lptr = lv - 1;
@@ -379,11 +437,10 @@ float get_rn_flt(LFG *gen)
   return (new_val*FLT_MULT);
 } 
 
-//double LFG::get_rn_dbl()
 double get_rn_dbl(LFG *gen)
 {
   unsigned *r0_local,*r1_local;
-  unsigned long temp1,temp2; /* Due to a bug in the SGI compiler, this should not be unsigned int */
+  unsigned long temp1,temp2; // Due to a bug in the SGI compiler, this should not be unsigned int
   int hptr_local,lptr,*hp;
   double new_val;
   int lv, kv;
@@ -399,8 +456,8 @@ double get_rn_dbl(LFG *gen)
   if (lptr>=lv) 
     lptr -= lv;
 
-  /*    INT_MOD_MASK causes arithmetic to be modular when integer size is  */
-  /*         different from generator modulus                              */
+  //    INT_MOD_MASK causes arithmetic to be modular when integer size is
+  //         different from generator modulus
 
   r0_local[hptr_local] = INT_MOD_MASK&(r0_local[hptr_local] + r0_local[lptr]);
   r1_local[hptr_local] = INT_MOD_MASK&(r1_local[hptr_local] + r1_local[lptr]);
@@ -421,6 +478,7 @@ double get_rn_dbl(LFG *gen)
 
   return (new_val);
 }
+*/
 
 /*************************************************************************/
 /*************************************************************************/

@@ -8,13 +8,17 @@ module System.Random.SPRNG.LFG.Internal
    , getRandomInt
    , getRandomFloat
    , getRandomDouble
+   , getRandomWords
    , spawnRng
    ) where
 
 import Foreign.Ptr (Ptr, FunPtr)
 import Foreign.ForeignPtr (newForeignPtr, withForeignPtr, ForeignPtr)
-import Foreign.C.Types (CInt, CFloat, CDouble)
+import Foreign.C.Types (CUInt, CInt, CFloat, CDouble)
 import Foreign.Marshal.Array (peekArray)
+import Foreign.Marshal.Alloc (alloca)
+import Foreign.Storable (peek)
+import Data.Word (Word32)
 
 type LFG = ForeignPtr ()
 type LFGPtr = Ptr ()
@@ -39,6 +43,9 @@ foreign import ccall unsafe "get_rn_flt" get_rn_flt :: LFGPtr -> IO CFloat
 
 -- | Generate a new random double.
 foreign import ccall unsafe "get_rn_dbl" get_rn_dbl :: LFGPtr -> IO CDouble
+
+-- | Generate a pair of random unsigned ints
+foreign import ccall unsafe "get_rn_words" get_rn_words :: LFGPtr -> Ptr CUInt -> Ptr CUInt -> IO ()
 
 -- | Print a RNG for diagnostic purposes.
 -- foreign import ccall unsafe "print_rng" print_rng :: LFGPtr -> IO ()
@@ -75,6 +82,16 @@ getRandomFloat rng =
 getRandomDouble :: LFG -> IO Double
 getRandomDouble rng =
    withForeignPtr rng $ \ptr -> realToFrac `fmap` get_rn_dbl ptr
+
+getRandomWords :: LFG -> IO (Word32, Word32)
+getRandomWords rng =
+   withForeignPtr rng $ \genPtr ->
+      alloca $ \resultPtr1 ->
+         alloca $ \resultPtr2 -> do
+            get_rn_words genPtr resultPtr1 resultPtr2
+            result1 <- peek resultPtr1
+            result2 <- peek resultPtr2
+            return (fromIntegral result1, fromIntegral result2)
 
 {-
 printRng :: LFG -> IO ()
