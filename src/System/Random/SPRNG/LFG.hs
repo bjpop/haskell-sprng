@@ -6,24 +6,38 @@
 -- (SPRNG) version 4.
 -- It provides a good quality fast splittable (aka spawnable) generator.
 --
--- Generators are represented by the abstract type RNG.
+-- Generators are represented by the abstract type 'Gen'.
 --
--- New generators are constructed using the "new" function, which takes
+-- New generators are constructed using the 'create' function, which takes
 -- a seed as its argument:
 --
--- let seed = 42
--- gen <- new seed
+-- @
+--    let seed = 42
+--    gen <- create seed
+-- @
 --
--- Given a generator, random integers and doubles can be generated using
--- randomInt and randomDouble:
+-- Given a generator, random values can be generated using the overloaded
+-- function 'uniform':
 --
--- nextInt <- randomInt gen
--- nextDouble <- randomDouble gen
+-- @
+--    nextInt    <- uniform gen :: IO Int
+--    nextDouble <- uniform gen :: IO Double
+-- @
+--
+-- A random value from a given range can be generated using the overloaded
+-- function 'uniformR':
+--
+-- @
+--    nextInt    <- uniformR (1, 10) gen :: IO Int
+--    nextDouble <- uniformR (0.5, 3.2) gen :: IO Double
+-- @
 --
 -- A list of new generators can be spawned from an existing generator
--- using the spawn function, by specifiying how many generators you want:
+-- using the 'spawn' function, by specifiying how many generators you want:
 --
--- newGens <- spawn 12
+-- @
+--    newGens <- spawn gen 12
+-- @
 --
 -- Note: a large number of new independent generators can be spawned,
 -- but the number is not infinite.
@@ -87,7 +101,7 @@ randomFloat (Gen lfg) = Internal.getRandomFloat lfg
 randomDouble :: Gen -> IO Double
 randomDouble (Gen lfg) = Internal.getRandomDouble lfg
 
--- | Generate two random Words
+-- | Generate two random 32 bit Words.
 randomWords :: Gen -> IO (Word32, Word32)
 randomWords (Gen lfg) = Internal.getRandomWords lfg
 
@@ -216,7 +230,8 @@ instance Variate Double where
 
 instance Variate Int where
 #if WORD_SIZE_IN_BITS < 64
-    uniform gen = fromIntegral <$> randomInt gen
+    -- uniform gen = randomInt gen
+    uniform = uniform2 wordsTo64Bit
 #else
     uniform = uniform2 wordsTo64Bit
 #endif
@@ -226,7 +241,8 @@ instance Variate Int where
 
 instance Variate Word where
 #if WORD_SIZE_IN_BITS < 64
-    uniform gen = fromIntegral <$> randomInt gen
+    -- uniform gen = fromIntegral <$> randomInt gen
+    uniform = uniform2 wordsTo64Bit
 #else
     uniform = uniform2 wordsTo64Bit
 #endif
