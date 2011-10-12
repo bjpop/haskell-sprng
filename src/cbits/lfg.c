@@ -60,9 +60,10 @@
 /*      into the appropriate places and avoid the problem entirely.)     */
 /*************************************************************************/
 
-/* modified by Bernie Pope to use the C language and not C++, to make it
-   easier to use in Haskell via the FFI
-*/
+/*************************************************************************/
+/*      Modified by Bernie Pope to use the C language and not C++, to    */
+/*      make it easier to use in Haskell via the FFI.                    */
+/*************************************************************************/
 
 #include <stdio.h>
 #include <string.h>

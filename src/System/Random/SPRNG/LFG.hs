@@ -51,16 +51,21 @@
 -- in any essential way, rather it is mostly a thin gloss over
 -- ordinary C code.
 
+#if defined(__GLASGOW_HASKELL__) && !defined(__HADDOCK__)
+#include "MachDeps.h"
+#endif
+
 module System.Random.SPRNG.LFG
    ( Gen
    , create
-   , randomWords
+   , randomWords -- this is useful for generating instances of Variate for other types
    , spawn
    , Variate (..)
    ) where
 
 import Control.Monad (ap, liftM)
 import Data.Word (Word, Word8, Word16, Word32, Word64)
+import Foreign.C.Types (CUInt)
 import Data.Int (Int8, Int16, Int32, Int64)
 import Data.Bits ((.&.), (.|.), shiftL)
 import Control.Applicative ((<$>))
@@ -69,11 +74,15 @@ import qualified System.Random.SPRNG.LFG.Internal as Internal
 -- | An abstract Random Number Generator
 data Gen = Gen Internal.LFG
 
--- | Construct a new generator, given a seed as input, and initialise with default parameters.
+-- | Construct a new generator, given a seed as input.
 create :: Int -- ^ Seed.
     -> IO Gen -- ^ New generator.
 create seed = do
    lfg <- Internal.new
+   -- Note: we use default parameters to initialise the generator.
+   -- This uses lags of (1279,861) which are the largest provided
+   -- by the SPRNG library. Larger lags give generators with longer
+   -- periods, but use more memory.
    Internal.initialise lfg 0 1 seed 0
    return $ Gen lfg
 
@@ -89,8 +98,8 @@ initRng (Gen lfg) streamnum nstreams seed param =
    Internal.initRng lfg streamnum nstreams seed param
 -}
 
--- | Generate a random Int.
-randomInt :: Gen -> IO Int
+-- | Generate a random (32 bit) Int.
+randomInt :: Gen -> IO CUInt
 randomInt (Gen lfg) = Internal.getRandomInt lfg
 
 -- | Generate a random Float.
@@ -230,8 +239,7 @@ instance Variate Double where
 
 instance Variate Int where
 #if WORD_SIZE_IN_BITS < 64
-    -- uniform gen = randomInt gen
-    uniform = uniform2 wordsTo64Bit
+    uniform gen = fromIntegral <$> randomInt gen
 #else
     uniform = uniform2 wordsTo64Bit
 #endif
@@ -241,8 +249,7 @@ instance Variate Int where
 
 instance Variate Word where
 #if WORD_SIZE_IN_BITS < 64
-    -- uniform gen = fromIntegral <$> randomInt gen
-    uniform = uniform2 wordsTo64Bit
+    uniform gen = fromIntegral <$> randomInt gen
 #else
     uniform = uniform2 wordsTo64Bit
 #endif

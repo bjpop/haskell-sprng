@@ -36,7 +36,7 @@ foreign import ccall unsafe "new_rng" new_rng :: IO LFGPtr
 foreign import ccall unsafe "init_rng" init_rng :: LFGPtr -> CInt -> CInt -> CInt -> CInt -> IO ()
 
 -- | Generate a new random int.
-foreign import ccall unsafe "get_rn_int" get_rn_int :: LFGPtr -> IO CInt
+foreign import ccall unsafe "get_rn_int" get_rn_int :: LFGPtr -> IO CUInt
 
 -- | Generate a new random float.
 foreign import ccall unsafe "get_rn_flt" get_rn_flt :: LFGPtr -> IO CFloat
@@ -70,10 +70,8 @@ initialise lfg streamnum nstreams seed param =
                    (fromIntegral seed)
                    (fromIntegral param)
 
--- Haskell Int is machine word sized, which is safe to fit a C int.
-getRandomInt :: LFG -> IO Int
-getRandomInt rng =
-   withForeignPtr rng $ \ptr -> fromIntegral `fmap` get_rn_int ptr
+getRandomInt :: LFG -> IO CUInt
+getRandomInt rng = withForeignPtr rng get_rn_int
 
 getRandomFloat :: LFG -> IO Float
 getRandomFloat rng =

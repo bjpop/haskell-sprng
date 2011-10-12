@@ -3,8 +3,9 @@
 
 typedef struct
 {
-  int rng_type;
-  char *gentype;
+  int rng_type;      // the type of generator,
+                     // in the Haskell binding this is always LFG
+  char *gentype;     // string name of generator type
   unsigned *si;      // sets next branch seed
   unsigned *r0;      // pointer to the even generator
   unsigned *r1;      // pointer to the odd generator
@@ -12,7 +13,7 @@ typedef struct
   int hptr;          // integer pointer into fill
   int seed;
   int init_seed;
-  int lval, kval;
+  int lval, kval;    // lag sizes
   int param;
 } LFG;
 
