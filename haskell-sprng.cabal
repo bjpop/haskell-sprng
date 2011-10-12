@@ -1,8 +1,38 @@
 name:                haskell-sprng
 version:             0.0.2
 cabal-version:       >= 1.6
-synopsis:            Binding to the SPRNG Pseuod Random Number Generator Library.
-description:         Write long description here.
+synopsis:            Fast spawnable pseudo random number generator.
+description:
+ Haskell-sprng is a pseudo random number generator featuring
+ good performance, good quality results and the ability to spawn
+ new independent generators from existing ones. It is implemented
+ as a FFI binding to the Lagged Fibonnacci generator from the Scalable
+ Parallel Pseudo Random Number Generator (SPRNG) library.
+ .
+ Here is an example program demonstrating the main features of the library:
+ .
+    >    module Main where
+    >
+    >    import System.Random.SPRNG.LFG
+    >    import Control.Monad (replicateM)
+    >
+    >    main = do
+    >       let seed = 42
+    >       -- create a new generator from a seed
+    >       gen <- create seed
+    >       -- print 10 random Ints from the generator
+    >       print =<< (generateVals 10 gen :: IO [Int])
+    >       -- print 10 random Doubles from the generator
+    >       print =<< (generateVals 10 gen :: IO [Double])
+    >       -- spawn three new generators from the initial one
+    >       gens <- spawn gen 3
+    >       -- print 10 random Ints from each of the new generators
+    >       mapM_ (\g -> print =<< (generateVals 10 g :: IO [Int])) gens
+    >
+    >    -- generate a list of random values
+    >    generateVals :: Variate a => Int -> Gen -> IO [a]
+    >    generateVals num = replicateM num . uniform
+
 category:            FFI, Random Numbers
 license:             BSD3
 license-file:        LICENSE
