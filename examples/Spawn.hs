@@ -1,6 +1,5 @@
 module Main where
 
-import Prelude hiding (init)
 import System.Random.SPRNG.LFG (Gen, create, uniform, spawn)
 import Control.Monad (replicateM_)
 import Data.Int (Int32)
