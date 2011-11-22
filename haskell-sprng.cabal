@@ -60,8 +60,7 @@ Library
    hs-source-dirs:
       src
    build-depends:
-      base > 3 && <= 5,
-      haskell98
+      base > 3 && <= 5
    exposed-modules:
       System.Random.SPRNG.LFG
       System.Random.SPRNG.LFG.Internal
