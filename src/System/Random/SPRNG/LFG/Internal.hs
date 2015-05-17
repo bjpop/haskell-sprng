@@ -14,7 +14,7 @@ module System.Random.SPRNG.LFG.Internal
 
 import Foreign.Ptr (Ptr, FunPtr)
 import Foreign.ForeignPtr (newForeignPtr, withForeignPtr, ForeignPtr)
-import Foreign.C.Types (CUInt, CInt, CFloat, CDouble)
+import Foreign.C.Types (CUInt(..), CInt(..), CFloat(..), CDouble(..))
 import Foreign.Marshal.Array (peekArray)
 import Foreign.Marshal.Alloc (alloca)
 import Foreign.Storable (peek)
